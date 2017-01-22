@@ -1,0 +1,39 @@
+https://boardgamegeek.com/wiki/page/Taluva_FAQ
+https://fr.wikipedia.org/wiki/Taluva
+
+4x: (Brown White Red Yellow)
+- 20 Hutts
+- 3 Temples
+- 2 Towers
+
+48 Volcano tiles
+
+    _
+  _/V\_
+ /D   L\ =====> Left:Desert * Righ:Lagoon
+ \_/-\_/
+
+Distribution of Terrain, keeping left and right distinct
+(assuming tiles are held with the volcano at top)
+
+ Right: Jungle  Grass   Desert  Quarry  Lagoon
+Left:
+Jungle    1       6       4       2       2
+Grass     5       1       2       2       1
+Desert    4       2       1       2       1
+Quarry    2       2       1       1       1
+Lagoon    1       1       1       1       1
+
+Total    28      23      19      15      11   = 96
+
+
+Distribution of Terrain, position independent
+
+        Jungle  Grass   Desert  Quarry  Lagoon
+Jungle    1       11      8       4       3
+Grass              1      4       4       2
+Desert                    1       3       2
+Quarry                            1       2
+Lagoon                                    1
+
+https://boardgamegeek.com/thread/184290/terrain-distribution
