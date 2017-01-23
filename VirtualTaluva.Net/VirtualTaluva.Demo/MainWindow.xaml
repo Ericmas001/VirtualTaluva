@@ -113,13 +113,30 @@
                     <Path.Fill>
                         <VisualBrush AutoLayoutContent="True">
                             <VisualBrush.Visual>
-                                <Rectangle Fill="Lime" Width="2" Height="2">
-                                    <Rectangle.Effect>
-                                        <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Blue" ThirdColor="Lime" />
-                                    </Rectangle.Effect>
-                                </Rectangle>
+                                <Grid>
+                                    <Rectangle Fill="Lime" Width="100" Height="100">
+                                        <Rectangle.Effect>
+                                            <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Blue" ThirdColor="Lime" />
+                                        </Rectangle.Effect>
+                                    </Rectangle>
+                                    <TextBlock Margin="{Binding CurrentMarginTopNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
+                                        <TextBlock.RenderTransform>
+                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock Margin="{Binding CurrentMarginLeftNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
+                                        <TextBlock.RenderTransform>
+                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
+                                    <TextBlock Margin="{Binding CurrentMarginRightNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
+                                        <TextBlock.RenderTransform>
+                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
+                                        </TextBlock.RenderTransform>
+                                    </TextBlock>
+                                </Grid>
                             </VisualBrush.Visual>
-                            </VisualBrush>
+                        </VisualBrush>
                     </Path.Fill>
                 </Path>
             </Grid>
