@@ -9,8 +9,8 @@ namespace VirtualTaluva.Demo
 {
     public class MainViewModel : BaseViewModel
     {
-        private static readonly Thickness m_BaseMargin = new Thickness(173.20508, 70, 0, 0);
-
+        private static readonly Thickness m_BaseMargin = new Thickness(103.923048, 70, 0, 0);
+        private static readonly Size m_Step = new Size(69.282032, 60);
         private static readonly Dictionary<double, Thickness> m_RotationMarginModifier = new Dictionary<double, Thickness>
         {
             {0, new Thickness(0)},
@@ -22,6 +22,8 @@ namespace VirtualTaluva.Demo
         };
 
         private double m_Scale = 1;
+        private int m_CurrentPositionX = 0;
+        private int m_CurrentPositionY = 0;
         private double m_Angle = 0;
         private Thickness m_CurrentMargin= new Thickness(m_BaseMargin.Left, m_BaseMargin.Top, m_BaseMargin.Right, m_BaseMargin.Bottom);
 
@@ -47,6 +49,19 @@ namespace VirtualTaluva.Demo
             get { return m_CurrentMargin; }
             set { Set(ref m_CurrentMargin, value); }
         }
+
+        public int CurrentPositionX
+        {
+            get { return m_CurrentPositionX; }
+            set { Set(ref m_CurrentPositionX, value); }
+        }
+
+        public int CurrentPositionY
+        {
+            get { return m_CurrentPositionY; }
+            set { Set(ref m_CurrentPositionY, value); }
+        }
+
         public string ZoomValue => $"{m_Scale*100:0}%";
 
         private RelayCommand m_ZoomInCommand;
@@ -60,6 +75,19 @@ namespace VirtualTaluva.Demo
 
         private RelayCommand m_AntiRotateCommand;
         public RelayCommand AntiRotateCommand => m_AntiRotateCommand ?? (m_AntiRotateCommand = new RelayCommand(OnAntiRotate));
+
+        private RelayCommand m_LeftCommand;
+        public RelayCommand LeftCommand => m_LeftCommand ?? (m_LeftCommand = new RelayCommand(OnLeft, CanGoLeft));
+
+        private RelayCommand m_RightCommand;
+        public RelayCommand RightCommand => m_RightCommand ?? (m_RightCommand = new RelayCommand(OnRight, CanGoRight));
+
+        private RelayCommand m_UpCommand;
+        public RelayCommand UpCommand => m_UpCommand ?? (m_UpCommand = new RelayCommand(OnUp, CanGoUp));
+
+        private RelayCommand m_DownCommand;
+        public RelayCommand DownCommand => m_DownCommand ?? (m_DownCommand = new RelayCommand(OnDown, CanGoDown));
+
 
         public MainViewModel()
         {
@@ -93,11 +121,54 @@ namespace VirtualTaluva.Demo
             RotateAngle = (RotateAngle + 300) % 360;
             RecalculateMargin();
         }
+        private void OnLeft()
+        {
+            CurrentPositionX--;
+            RecalculateMargin();
+        }
+
+        private bool CanGoLeft()
+        {
+            return CurrentPositionX > 0;
+        }
+        private void OnRight()
+        {
+            CurrentPositionX++;
+            RecalculateMargin();
+        }
+
+        private bool CanGoRight()
+        {
+            return CurrentPositionX < 3;
+        }
+        private void OnUp()
+        {
+            CurrentPositionY--;
+            RecalculateMargin();
+        }
+
+        private bool CanGoUp()
+        {
+            return CurrentPositionY > 0;
+        }
+        private void OnDown()
+        {
+            CurrentPositionY++;
+            RecalculateMargin();
+        }
+
+        private bool CanGoDown()
+        {
+            return CurrentPositionY < 1;
+        }
 
         private void RecalculateMargin()
         {
             var rotationModifier = m_RotationMarginModifier.ContainsKey(RotateAngle) ? m_RotationMarginModifier[RotateAngle] : new Thickness(0);
-            CurrentMargin = new Thickness(m_BaseMargin.Left + rotationModifier.Left, m_BaseMargin.Top + rotationModifier.Top, m_BaseMargin.Right + rotationModifier.Right, m_BaseMargin.Bottom + rotationModifier.Bottom);
+            var rowOffset = CurrentPositionY % 2 * (m_Step.Width / 2);
+            if ((int) (RotateAngle / 60) % 2 == 0)
+                rowOffset = 0 - rowOffset;
+            CurrentMargin = new Thickness(m_BaseMargin.Left + rotationModifier.Left + rowOffset + (CurrentPositionX * m_Step.Width), m_BaseMargin.Top + rotationModifier.Top + (CurrentPositionY * m_Step.Height), m_BaseMargin.Right + rotationModifier.Right, m_BaseMargin.Bottom + rotationModifier.Bottom);
         }
     }
 }
