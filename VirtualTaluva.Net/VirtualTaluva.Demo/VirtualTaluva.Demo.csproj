@@ -84,6 +84,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ShaderEffects\AngularGradientEffect.cs" />
+    <Compile Include="StuffOnTile\AbstractStuffOnTile.cs" />
+    <Compile Include="StuffOnTile\LevelIndicator.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

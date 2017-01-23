@@ -119,21 +119,22 @@
                                             <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Blue" ThirdColor="Lime" />
                                         </Rectangle.Effect>
                                     </Rectangle>
-                                    <TextBlock Margin="{Binding CurrentMarginTopNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
-                                        <TextBlock.RenderTransform>
-                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
-                                    <TextBlock Margin="{Binding CurrentMarginLeftNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
-                                        <TextBlock.RenderTransform>
-                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
-                                    <TextBlock Margin="{Binding CurrentMarginRightNumber}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
-                                        <TextBlock.RenderTransform>
-                                            <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}"></RotateTransform>
-                                        </TextBlock.RenderTransform>
-                                    </TextBlock>
+                                    <ItemsControl ItemsSource="{Binding StuffOnTile}">
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <Grid />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <TextBlock Margin="{Binding CurrentMargin}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
+                                                    <TextBlock.RenderTransform>
+                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}" />
+                                                    </TextBlock.RenderTransform>
+                                                </TextBlock>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </Grid>
                             </VisualBrush.Visual>
                         </VisualBrush>
