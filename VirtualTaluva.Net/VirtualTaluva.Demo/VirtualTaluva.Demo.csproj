@@ -35,12 +35,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Com.Ericmas001.Windows, Version=0.4.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Com.Ericmas001.Windows.0.4.0\lib\net45\Com.Ericmas001.Windows.dll</HintPath>
+    <Reference Include="Com.Ericmas001.Windows, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Com.Ericmas001.Windows.0.4.5\lib\net45\Com.Ericmas001.Windows.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Com.Ericmas001.Windows.Xaml, Version=0.4.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Com.Ericmas001.Windows.Xaml.0.4.4\lib\net45\Com.Ericmas001.Windows.Xaml.dll</HintPath>
+    <Reference Include="Com.Ericmas001.Windows.Xaml, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Com.Ericmas001.Windows.Xaml.0.4.5\lib\net45\Com.Ericmas001.Windows.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -91,6 +91,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Attach.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -98,7 +99,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MouseWheelGesture.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

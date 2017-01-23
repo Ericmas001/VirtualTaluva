@@ -4,22 +4,50 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualTaluva.Demo"
+        xmlns:markupExtensions="clr-namespace:Com.Ericmas001.Windows.MarkupExtensions;assembly=Com.Ericmas001.Windows"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary>
+                    <LinearGradientBrush x:Key="MyLinearGradientBrush" EndPoint="0,0" StartPoint="1,0" >
+                        <GradientStop Color="Blue" Offset="0.0"/>
+                        <GradientStop Color="Green" Offset="0.5"/>
+                        <GradientStop Color="Red" Offset="1.0"/>
+                    </LinearGradientBrush>
+                    <InputBindingCollection x:Key="MyInputBindings">
+                        <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Down, Keys=Control}" Command="{Binding ZoomOutCommand}" />
+                        <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Up, Keys=Control}" Command="{Binding ZoomInCommand}" />
+                        <KeyBinding Key="Space" Command="{Binding RotateCommand}" />
+                        <KeyBinding Key="Back" Command="{Binding AntiRotateCommand}" />
+                    </InputBindingCollection>
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Window.Style>
+        <Style>
+            <Setter Property="local:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+        </Style>
+    </Window.Style>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" HorizontalAlignment="Center">
+        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
             <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomOutCommand}">-</Button>
             <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding ZoomValue}" />
             <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomInCommand}">+</Button>
+            <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding AntiRotateCommand}">↶</Button>
+            <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding RotateCommand}">↷</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
-            <ScrollViewer.InputBindings>
-                <MouseBinding Gesture="{local:MouseWheel Direction=Down, Keys=Control}" Command="{Binding ZoomOutCommand}" />
-                <MouseBinding Gesture="{local:MouseWheel Direction=Up, Keys=Control}" Command="{Binding ZoomInCommand}" />
-            </ScrollViewer.InputBindings>
+            <ScrollViewer.Style>
+                <Style>
+                    <Setter Property="local:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+                </Style>
+            </ScrollViewer.Style>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
                 <Grid.LayoutTransform>
                     <ScaleTransform ScaleX="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" />
@@ -54,8 +82,26 @@
                       Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
                 <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="277.128128,120,0,0"
                       Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Red" Margin="103.923048,0,0,0" x:Name="PathTile"
-                      Data="M69.282032,0 L103.923048,20 103.923048,60 138.564064,80 138.564064,120 103.923048,140 69.282032,120 34.641016,140 0,120  0,80 34.641016,60 34.641016,20 69.282032,0 z"/>
+                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="{StaticResource MyLinearGradientBrush}" Margin="{Binding CurrentMargin}" x:Name="PathTile"
+                      Data="
+                      M0,-70 
+                      L34.641016,-50 
+                      34.641016,-10 
+                      69.282032,10 
+                      69.282032,50 
+                      34.641016,70 
+                      0,50 
+                      -34.641016,70 
+                      -69.282032,50  
+                      -69.282032,10 
+                      -34.641016,-10 
+                      -34.641016,-50 
+                      0,-70 
+                      z">
+                    <Path.RenderTransform>
+                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding RotateAngle}"></RotateTransform>
+                    </Path.RenderTransform>
+                </Path>
 
             </Grid>
         </ScrollViewer>
