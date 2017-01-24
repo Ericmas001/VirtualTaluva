@@ -7,7 +7,7 @@
         xmlns:markupExtensions="clr-namespace:Com.Ericmas001.Windows.MarkupExtensions;assembly=Com.Ericmas001.Windows"
         xmlns:shaderEffects="clr-namespace:VirtualTaluva.Demo.ShaderEffects"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="350" Width="638.728">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
@@ -29,6 +29,10 @@
                         <KeyBinding Key="Right" Command="{Binding RightCommand}" />
                         <KeyBinding Key="Up" Command="{Binding UpCommand}" />
                         <KeyBinding Key="Down" Command="{Binding DownCommand}" />
+                        <KeyBinding Key="Left" Modifiers="Control" Command="{Binding MoreLeftCommand}" />
+                        <KeyBinding Key="Right" Modifiers="Control" Command="{Binding MoreRightCommand}" />
+                        <KeyBinding Key="Up" Modifiers="Control" Command="{Binding MoreUpCommand}" />
+                        <KeyBinding Key="Down" Modifiers="Control" Command="{Binding MoreDownCommand}" />
                     </InputBindingCollection>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
@@ -46,10 +50,14 @@
             <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomInCommand}">+</Button>
             <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding AntiRotateCommand}">↶</Button>
             <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding RotateCommand}">↷</Button>
-            <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding LeftCommand}">◀</Button>
-            <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding RightCommand}">▶</Button>
-            <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding UpCommand}">▲</Button>
-            <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding DownCommand}">▼</Button>
+            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding LeftCommand}">◀</Button>
+            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding UpCommand}">▲</Button>
+            <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding DownCommand}">▼</Button>
+            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding RightCommand}">▶</Button>
+            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding MoreLeftCommand}">◀+</Button>
+            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreUpCommand}">▲+</Button>
+            <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding MoreDownCommand}">▼+</Button>
+            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreRightCommand}">▶+</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
             <ScrollViewer.Style>
@@ -61,37 +69,19 @@
                 <Grid.LayoutTransform>
                     <ScaleTransform ScaleX="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" ScaleY="{Binding Scale, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid.LayoutTransform>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="0,0,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="69.282032,0,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="138.564064,0,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="207.846096,0,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="277.128128,0,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="34.641016,60,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="103.923048,60,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="173.20508,60,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="242.487112,60,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="311.769144,60,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="0,120,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="69.282032,120,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="138.564064,120,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="207.846096,120,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="277.128128,120,0,0"
-                      Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Lime" StrokeThickness="3" Margin="{Binding CurrentMargin}" x:Name="PathTile"
+                <ItemsControl ItemsSource="{Binding Board}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="{Binding Margin}" Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Lime" StrokeThickness="2" Margin="{Binding CurrentMargin}" x:Name="PathTile"
                       Data="
                       M0,-70 
                       L34.641016,-50 
@@ -114,11 +104,13 @@
                         <VisualBrush AutoLayoutContent="True">
                             <VisualBrush.Visual>
                                 <Grid>
-                                    <Rectangle Fill="Lime" Width="100" Height="100">
-                                        <Rectangle.Effect>
-                                            <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Blue" ThirdColor="Lime" />
-                                        </Rectangle.Effect>
-                                    </Rectangle>
+                                    <DockPanel>
+                                        <Rectangle Fill="White" Width="100" Height="100">
+                                            <Rectangle.Effect>
+                                                <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
+                                            </Rectangle.Effect>
+                                        </Rectangle>
+                                    </DockPanel>
                                     <ItemsControl ItemsSource="{Binding StuffOnTile}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>

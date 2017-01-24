@@ -10,6 +10,10 @@ namespace VirtualTaluva.Demo
 {
     public class MainViewModel : BaseViewModel
     {
+        private Thickness Bounds = new Thickness(100,100,100,100);
+
+        private readonly BoardTile[,] m_Board = new BoardTile[200,200];
+        public FastObservableCollection<BoardTile> Board { get; } = new FastObservableCollection<BoardTile>();
         public FastObservableCollection<AbstractStuffOnTile> StuffOnTile { get; } = new FastObservableCollection<AbstractStuffOnTile>
         {
             new LevelIndicator(LevelIndicator.TOP_MARGIN),
@@ -17,7 +21,7 @@ namespace VirtualTaluva.Demo
             new LevelIndicator(LevelIndicator.RIGHT_MARGIN)
         };
 
-        private static readonly Thickness m_BaseMargin = new Thickness(103.923048, 70, 0, 0);
+        private static readonly Thickness m_BaseMargin = new Thickness(138.564064, 130, 0, 0);
         private static readonly Size m_Step = new Size(69.282032, 60);
         private static readonly Dictionary<double, Thickness> m_RotationMarginModifier = new Dictionary<double, Thickness>
         {
@@ -103,10 +107,81 @@ namespace VirtualTaluva.Demo
         private RelayCommand m_DownCommand;
         public RelayCommand DownCommand => m_DownCommand ?? (m_DownCommand = new RelayCommand(OnDown, CanGoDown));
 
+        private RelayCommand m_MoreLeftCommand;
+        public RelayCommand MoreLeftCommand => m_MoreLeftCommand ?? (m_MoreLeftCommand = new RelayCommand(OnMoreLeft, CanMoreLeft));
+
+        private RelayCommand m_MoreRightCommand;
+        public RelayCommand MoreRightCommand => m_MoreRightCommand ?? (m_MoreRightCommand = new RelayCommand(OnMoreRight, CanMoreRight));
+
+        private RelayCommand m_MoreUpCommand;
+        public RelayCommand MoreUpCommand => m_MoreUpCommand ?? (m_MoreUpCommand = new RelayCommand(OnMoreUp, CanMoreUp));
+
+        private RelayCommand m_MoreDownCommand;
+        public RelayCommand MoreDownCommand => m_MoreDownCommand ?? (m_MoreDownCommand = new RelayCommand(OnMoreDown, CanMoreDown));
+
 
         public MainViewModel()
         {
+            for (int i = 99; i < 101; ++i)
+            {
+                for (int k = 0; k < 1; ++k)
+                {
+                    AddBoardTileLeft(i);
+                    AddBoardTileRight(i);
+                }
+            }
+            foreach (var boardTile in Board)
+                boardTile.RefreshMargin();
             RecalculateMargin();
+        }
+
+        private void AddBoardTileLeft(int row)
+        {
+            int i = 100;
+
+            for (; i >= 0 && m_Board[i, row] != null; --i);
+
+            if (i >= 0)
+            {
+                AddBoardTile(row, i);
+            }
+        }
+
+        private void AddBoardTileRight(int row)
+        {
+            int i = 100;
+
+            for (; i < 200 && m_Board[i, row] != null; ++i) ;
+
+            if (i < 200)
+            {
+                AddBoardTile(row, i);
+            }
+        }
+
+        private void AddBoardTile(int row, int i)
+        {
+            if (i <= Bounds.Left)
+            {
+                Bounds.Left = i - 1;
+                BoardTile.XOffset = Bounds.Left;
+            }
+
+            if (i > Bounds.Right)
+                Bounds.Right = i;
+
+            if (row <= Bounds.Top)
+            {
+                Bounds.Top = row - 1;
+                BoardTile.YOffset = Bounds.Top;
+            }
+
+            if (row > Bounds.Bottom)
+                Bounds.Bottom = row;
+
+            var bt = new BoardTile(i, row);
+            Board.Add(bt);
+            m_Board[i, row] = bt;
         }
 
         private void OnZoomIn()
@@ -154,7 +229,7 @@ namespace VirtualTaluva.Demo
 
         private bool CanGoRight()
         {
-            return CurrentPositionX < 3;
+            return CurrentPositionX < Bounds.Right - Bounds.Left - 2;
         }
         private void OnUp()
         {
@@ -174,13 +249,79 @@ namespace VirtualTaluva.Demo
 
         private bool CanGoDown()
         {
-            return CurrentPositionY < 1;
+            return CurrentPositionY < Bounds.Bottom - Bounds.Top - 2;
+        }
+
+        private void OnMoreLeft()
+        {
+            for (int i = (int)Bounds.Top+1; i <= Bounds.Bottom; i++)
+            {
+                AddBoardTileLeft(i);
+            }
+            foreach (var boardTile in Board)
+                boardTile.RefreshMargin();
+            CurrentPositionX++;
+            RecalculateMargin();
+        }
+
+        private bool CanMoreLeft()
+        {
+            return Bounds.Left > 0;
+        }
+
+        private void OnMoreRight()
+        {
+            for (int i = (int)Bounds.Top + 1; i <= Bounds.Bottom; i++)
+            {
+                AddBoardTileRight(i);
+            }
+            foreach (var boardTile in Board)
+                boardTile.RefreshMargin();
+        }
+
+        private bool CanMoreRight()
+        {
+            return Bounds.Right < 200;
+        }
+
+        private void OnMoreUp()
+        {
+            int x = (int)Bounds.Top;
+            for (int i = 100; i > Bounds.Left; i--)
+                AddBoardTileLeft(x);
+            for (int i = 100; i < Bounds.Right; i++)
+                AddBoardTileRight(x);
+            foreach (var boardTile in Board)
+                boardTile.RefreshMargin();
+            CurrentPositionY++;
+            RecalculateMargin();
+        }
+
+        private bool CanMoreUp()
+        {
+            return Bounds.Top > 0;
+        }
+
+        private void OnMoreDown()
+        {
+            int x = (int)Bounds.Bottom + 1;
+            for (int i = 100; i > Bounds.Left; i--)
+                AddBoardTileLeft(x);
+            for (int i = 100; i < Bounds.Right; i++)
+                AddBoardTileRight(x);
+            foreach (var boardTile in Board)
+                boardTile.RefreshMargin();
+        }
+
+        private bool CanMoreDown()
+        {
+            return Bounds.Bottom < 200;
         }
 
         private void RecalculateMargin()
         {
             var rotationModifier = m_RotationMarginModifier.ContainsKey(RotateAngle) ? m_RotationMarginModifier[RotateAngle] : new Thickness(0);
-            var rowOffset = CurrentPositionY % 2 * (m_Step.Width / 2);
+            var rowOffset = (CurrentPositionY + Bounds.Top) % 2 * (m_Step.Width / 2);
             if ((int) (RotateAngle / 60) % 2 == 0)
                 rowOffset = 0 - rowOffset;
             CurrentMargin = new Thickness(m_BaseMargin.Left + rotationModifier.Left + rowOffset + (CurrentPositionX * m_Step.Width), m_BaseMargin.Top + rotationModifier.Top + (CurrentPositionY * m_Step.Height), m_BaseMargin.Right + rotationModifier.Right, m_BaseMargin.Bottom + rotationModifier.Bottom);

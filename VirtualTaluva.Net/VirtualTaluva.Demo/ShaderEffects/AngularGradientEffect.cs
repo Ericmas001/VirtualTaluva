@@ -40,7 +40,6 @@ namespace VirtualTaluva.Demo.ShaderEffects
         {
             PixelShader pixelShader = new PixelShader();
             pixelShader.UriSource = new Uri("/VirtualTaluva.Demo;component/Resources/AngularGradientEffect.ps", UriKind.Relative);
-            //pixelShader.UriSource = new Uri("/VirtualTaluva.Demo;component/Resources/test.ps", UriKind.Relative);
             this.PixelShader = pixelShader;
 
             this.UpdateShaderValue(InputProperty);

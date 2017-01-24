@@ -83,6 +83,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BoardTile.cs" />
     <Compile Include="ShaderEffects\AngularGradientEffect.cs" />
     <Compile Include="StuffOnTile\AbstractStuffOnTile.cs" />
     <Compile Include="StuffOnTile\LevelIndicator.cs" />
@@ -125,6 +126,7 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
+    <None Include="Resources\AngularGradientEffect.hlsl" />
     <Resource Include="Resources\AngularGradientEffect.ps" />
   </ItemGroup>
   <ItemGroup>
