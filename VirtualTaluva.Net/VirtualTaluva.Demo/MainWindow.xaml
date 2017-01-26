@@ -81,7 +81,7 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Lime" StrokeThickness="2" Margin="{Binding CurrentMargin}" x:Name="PathTile"
+                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="{Binding CurrentTile.StrokeColor}" StrokeThickness="{Binding CurrentTile.StrokeThickness}" Margin="{Binding CurrentTile.CurrentMargin}" x:Name="PathTile"
                       Data="
                       M0,-70 
                       L34.641016,-50 
@@ -98,7 +98,7 @@
                       0,-70 
                       z">
                     <Path.RenderTransform>
-                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding RotateAngle}"></RotateTransform>
+                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding CurrentTile.RotateAngle}"></RotateTransform>
                     </Path.RenderTransform>
                     <Path.Fill>
                         <VisualBrush AutoLayoutContent="True">
@@ -111,7 +111,7 @@
                                             </Rectangle.Effect>
                                         </Rectangle>
                                     </DockPanel>
-                                    <ItemsControl ItemsSource="{Binding StuffOnTile}">
+                                    <ItemsControl ItemsSource="{Binding CurrentTile.StuffOnTile}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <Grid />

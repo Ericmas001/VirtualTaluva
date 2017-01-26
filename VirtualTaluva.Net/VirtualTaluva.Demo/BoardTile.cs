@@ -11,12 +11,15 @@ namespace VirtualTaluva.Demo
 {
     public class BoardTile : BaseViewModel
     {
-        public static double XOffset { get; set; } = 100;
-        public static double YOffset { get; set; } = 100;
+        [SuppressMessage("ReSharper", "PossibleLossOfFraction")]
+        public static double XOffset { get; set; } = MainViewModel.NB_TILES / 2;
+
+        [SuppressMessage("ReSharper", "PossibleLossOfFraction")]
+        public static double YOffset { get; set; } = MainViewModel.NB_TILES / 2;
 
         private readonly int m_X;
         private readonly int m_Y;
-        public Thickness Margin =>  new Thickness((m_X - XOffset) * 69.282032 - (m_Y % 2 * 34.641016), (m_Y - YOffset) * 60, 0, 0);
+        public Thickness Margin =>  new Thickness((m_X - XOffset) * MainViewModel.TILE_WIDTH - (m_Y % 2 * (MainViewModel.TILE_WIDTH / 2)), (m_Y - YOffset) * MainViewModel.TILE_HEIGHT, 0, 0);
 
         public BoardTile(int x, int y)
         {
