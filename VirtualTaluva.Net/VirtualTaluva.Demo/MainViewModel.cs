@@ -12,7 +12,7 @@ namespace VirtualTaluva.Demo
         public const double TILE_WIDTH = 69.282032;
         public const double TILE_HEIGHT = 60;
 
-        public PlayingTile CurrentTile { get; } = new PlayingTile();
+        public PlayingTile CurrentTile { get; private set; }
 
         [SuppressMessage("ReSharper", "PossibleLossOfFraction")]
         private Thickness m_Bounds = new Thickness(NB_TILES/2, NB_TILES / 2, NB_TILES / 2, NB_TILES / 2);
@@ -20,6 +20,7 @@ namespace VirtualTaluva.Demo
         private readonly BoardTile[,] m_Board = new BoardTile[NB_TILES, NB_TILES];
 
         public FastObservableCollection<BoardTile> Board { get; } = new FastObservableCollection<BoardTile>();
+        public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
 
         private double m_Scale = 1;
        
@@ -72,7 +73,9 @@ namespace VirtualTaluva.Demo
         private RelayCommand m_MoreDownCommand;
         public RelayCommand MoreDownCommand => m_MoreDownCommand ?? (m_MoreDownCommand = new RelayCommand(() => AddBoardTileRow((int)m_Bounds.Bottom + 1), () => m_Bounds.Bottom < NB_TILES));
 
-
+        private RelayCommand m_AcceptCommand;
+        public RelayCommand AcceptCommand => m_AcceptCommand ?? (m_AcceptCommand = new RelayCommand(Accept, () => CurrentTile.State == PlayingTileStateEnum.ActiveCorrect));
+        
         public MainViewModel()
         {
             for (int i = 99; i < 101; ++i)
@@ -81,6 +84,7 @@ namespace VirtualTaluva.Demo
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
                 }
+            PlayingTiles.Add(CurrentTile = new PlayingTile());
             RefreshBoard();
         }
 
@@ -160,6 +164,12 @@ namespace VirtualTaluva.Demo
                 boardTile.RefreshMargin();
 
             CurrentTile.RecalculateMargin(m_Bounds);
+        }
+        private void Accept()
+        {
+            CurrentTile.State = PlayingTileStateEnum.Passive;
+            PlayingTiles.Add(CurrentTile = new PlayingTile());
+            RefreshBoard();
         }
     }
 }

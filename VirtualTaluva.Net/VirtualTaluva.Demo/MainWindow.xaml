@@ -33,6 +33,7 @@
                         <KeyBinding Key="Right" Modifiers="Control" Command="{Binding MoreRightCommand}" />
                         <KeyBinding Key="Up" Modifiers="Control" Command="{Binding MoreUpCommand}" />
                         <KeyBinding Key="Down" Modifiers="Control" Command="{Binding MoreDownCommand}" />
+                        <KeyBinding Key="Enter" Command="{Binding AcceptCommand}" />
                     </InputBindingCollection>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
@@ -58,6 +59,7 @@
             <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreUpCommand}">▲+</Button>
             <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding MoreDownCommand}">▼+</Button>
             <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreRightCommand}">▶+</Button>
+            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding AcceptCommand}">GO</Button>
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
             <ScrollViewer.Style>
@@ -81,7 +83,15 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="{Binding CurrentTile.StrokeColor}" StrokeThickness="{Binding CurrentTile.StrokeThickness}" Margin="{Binding CurrentTile.CurrentMargin}" x:Name="PathTile"
+                <ItemsControl ItemsSource="{Binding PlayingTiles}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Grid />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="{Binding StrokeColor}" StrokeThickness="{Binding StrokeThickness}" Margin="{Binding CurrentMargin}" x:Name="PathTile"
                       Data="
                       M0,-70 
                       L34.641016,-50 
@@ -97,41 +107,44 @@
                       -34.641016,-50 
                       0,-70 
                       z">
-                    <Path.RenderTransform>
-                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding CurrentTile.RotateAngle}"></RotateTransform>
-                    </Path.RenderTransform>
-                    <Path.Fill>
-                        <VisualBrush AutoLayoutContent="True">
-                            <VisualBrush.Visual>
-                                <Grid>
-                                    <DockPanel>
-                                        <Rectangle Fill="White" Width="100" Height="100">
-                                            <Rectangle.Effect>
-                                                <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
-                                            </Rectangle.Effect>
-                                        </Rectangle>
-                                    </DockPanel>
-                                    <ItemsControl ItemsSource="{Binding CurrentTile.StuffOnTile}">
-                                        <ItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <Grid />
-                                            </ItemsPanelTemplate>
-                                        </ItemsControl.ItemsPanel>
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <TextBlock Margin="{Binding CurrentMargin}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
-                                                    <TextBlock.RenderTransform>
-                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}" />
-                                                    </TextBlock.RenderTransform>
-                                                </TextBlock>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </Grid>
-                            </VisualBrush.Visual>
-                        </VisualBrush>
-                    </Path.Fill>
-                </Path>
+                                <Path.RenderTransform>
+                                    <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding RotateAngle}"></RotateTransform>
+                                </Path.RenderTransform>
+                                <Path.Fill>
+                                    <VisualBrush AutoLayoutContent="True">
+                                        <VisualBrush.Visual>
+                                            <Grid>
+                                                <DockPanel>
+                                                    <Rectangle Fill="White" Width="100" Height="100">
+                                                        <Rectangle.Effect>
+                                                            <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
+                                                        </Rectangle.Effect>
+                                                    </Rectangle>
+                                                </DockPanel>
+                                                <ItemsControl ItemsSource="{Binding StuffOnTile}">
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <Grid />
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock Margin="{Binding CurrentMargin}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
+                                                                <TextBlock.RenderTransform>
+                                                                    <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}" />
+                                                                </TextBlock.RenderTransform>
+                                                            </TextBlock>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </Grid>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Path.Fill>
+                            </Path>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </Grid>
         </ScrollViewer>
     </DockPanel>
