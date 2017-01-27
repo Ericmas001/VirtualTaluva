@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:VirtualTaluva.Demo"
         xmlns:markupExtensions="clr-namespace:Com.Ericmas001.Windows.MarkupExtensions;assembly=Com.Ericmas001.Windows"
         xmlns:shaderEffects="clr-namespace:VirtualTaluva.Demo.ShaderEffects"
+        xmlns:stuff="clr-namespace:VirtualTaluva.Demo.StuffOnTile"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="638.728">
     <Window.DataContext>
@@ -127,15 +128,17 @@
                                                             <Grid />
                                                         </ItemsPanelTemplate>
                                                     </ItemsControl.ItemsPanel>
-                                                    <ItemsControl.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <TextBlock Margin="{Binding CurrentMargin}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="1">
-                                                                <TextBlock.RenderTransform>
-                                                                    <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}" />
-                                                                </TextBlock.RenderTransform>
-                                                            </TextBlock>
-                                                        </DataTemplate>
-                                                    </ItemsControl.ItemTemplate>
+                                                    <ItemsControl.Resources>
+                                                        <ResourceDictionary>
+                                                            <DataTemplate DataType="{x:Type stuff:LevelIndicator}">
+                                                                <TextBlock Margin="{Binding CurrentMargin}" Background="Black" Foreground="White" TextAlignment="Center" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="8" Padding="3,0,3,0" FontWeight="Bold" Text="{Binding Level}">
+                                                                    <TextBlock.RenderTransform>
+                                                                        <RotateTransform CenterX="0.5" CenterY="0.5" Angle="{Binding AntiRotateAngle}" />
+                                                                    </TextBlock.RenderTransform>
+                                                                </TextBlock>
+                                                            </DataTemplate>
+                                                        </ResourceDictionary>
+                                                    </ItemsControl.Resources>
                                                 </ItemsControl>
                                             </Grid>
                                         </VisualBrush.Visual>

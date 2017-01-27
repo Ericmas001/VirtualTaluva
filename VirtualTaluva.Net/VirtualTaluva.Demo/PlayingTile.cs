@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Com.Ericmas001.Windows;
@@ -15,6 +16,7 @@ namespace VirtualTaluva.Demo
     }
     public class PlayingTile : BaseViewModel
     {
+        private readonly IBoard m_Board;
         private static readonly Thickness m_BaseMargin = new Thickness(MainViewModel.TILE_WIDTH, 10, 0, 0);
         private static readonly Dictionary<double, Thickness> m_RotationMarginModifier = new Dictionary<double, Thickness>
         {
@@ -26,19 +28,18 @@ namespace VirtualTaluva.Demo
             {300, new Thickness(-43,-15.5,0,0)},
         };
 
+
+        private Point[] m_CurrentPositions = new Point[0];
+        public int Level { get; private set; }
         private PlayingTileStateEnum m_State = PlayingTileStateEnum.ActiveCorrect;
-        private int m_CurrentPositionX = MainViewModel.NB_TILES / 2;
-        private int m_CurrentPositionY = MainViewModel.NB_TILES / 2;
+        private int m_CurrentPositionX;
+        private int m_CurrentPositionY;
         private double m_Angle;
         private Thickness m_CurrentMargin = new Thickness(m_BaseMargin.Left, m_BaseMargin.Top, m_BaseMargin.Right, m_BaseMargin.Bottom);
 
 
-        public FastObservableCollection<AbstractStuffOnTile> StuffOnTile { get; } = new FastObservableCollection<AbstractStuffOnTile>
-        {
-            new LevelIndicator(LevelIndicator.TOP_MARGIN),
-            new LevelIndicator(LevelIndicator.LEFT_MARGIN),
-            new LevelIndicator(LevelIndicator.RIGHT_MARGIN)
-        };
+        public FastObservableCollection<AbstractStuffOnTile> StuffOnTile { get; } = new FastObservableCollection<AbstractStuffOnTile>();
+
         public PlayingTileStateEnum State
         {
             get { return m_State; }
@@ -97,6 +98,71 @@ namespace VirtualTaluva.Demo
         public double AntiRotateAngle => 360 - m_Angle;
 
 
+        public PlayingTile(IBoard board, int x, int y)
+        {
+            m_Board = board;
+            CurrentPositionX = x;
+            CurrentPositionY = y;
+            RecalculatePositions();
+        }
+
+        private void RecalculatePositions()
+        {
+            if (IsPointingUp)
+                if (IsOnOddRow)
+                    m_CurrentPositions = new[]
+                    {
+                        new Point(CurrentPositionX, CurrentPositionY - 1),
+                        new Point(CurrentPositionX, CurrentPositionY),
+                        new Point(CurrentPositionX + 1, CurrentPositionY),
+                    };
+                else
+                    m_CurrentPositions = new[]
+                    {
+                        new Point(CurrentPositionX, CurrentPositionY - 1),
+                        new Point(CurrentPositionX - 1, CurrentPositionY),
+                        new Point(CurrentPositionX, CurrentPositionY),
+                    };
+            else if (IsOnOddRow)
+                m_CurrentPositions = new[]
+                {
+                    new Point(CurrentPositionX, CurrentPositionY - 1),
+                    new Point(CurrentPositionX - 1, CurrentPositionY - 1),
+                    new Point(CurrentPositionX, CurrentPositionY),
+                };
+            else
+                m_CurrentPositions = new[]
+                {
+                    new Point(CurrentPositionX, CurrentPositionY - 1),
+                    new Point(CurrentPositionX + 1, CurrentPositionY - 1),
+                    new Point(CurrentPositionX, CurrentPositionY),
+                };
+            if (State != PlayingTileStateEnum.Passive)
+            {
+                if (m_CurrentPositions.Any(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y] == null))
+                    State = PlayingTileStateEnum.ActiveProblem;
+                else if (m_CurrentPositions.Select(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Count).Distinct().Count() == 1)
+                {
+                    if (m_CurrentPositions.All(p => !m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Any()))
+                    {
+                        //if (m_Board.NbPlayingTiles == 1)
+                            State = PlayingTileStateEnum.ActiveCorrect;
+                        //else if (m_CurrentPositions.Any(p => (!m_Board.BoardMatrix[(int) p.X - 1, (int) p.Y]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X + 1, (int) p.Y]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X, (int) p.Y - 1]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X, (int) p.Y + 1]?.PlayingTiles.Any() ?? false)))
+                        //    State = PlayingTileStateEnum.ActiveCorrect;
+                        //else
+                        //    State = PlayingTileStateEnum.ActiveProblem;
+                    }
+                    else if (m_CurrentPositions.Select(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Last()).Distinct().Count() == 1)
+                        State = PlayingTileStateEnum.ActiveProblem;
+                    else
+                        State = PlayingTileStateEnum.ActiveCorrect;
+                }
+                else
+                    State = PlayingTileStateEnum.ActiveProblem;
+            }
+        }
+
+
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         private void RefreshState()
         {
@@ -104,50 +170,74 @@ namespace VirtualTaluva.Demo
             RaisePropertyChanged(nameof(StrokeThickness));
         }
 
-        public void RecalculateMargin(Thickness bounds)
+        public bool IsPointingUp => (int)(RotateAngle / 60) % 2 == 0;
+        public bool IsOnOddRow => CurrentPositionY % 2 == 0;
+
+        public void RecalculateMargin()
         {
             var rotationModifier = m_RotationMarginModifier.ContainsKey(RotateAngle) ? m_RotationMarginModifier[RotateAngle] : new Thickness(0);
             var rowOffset = CurrentPositionY % 2 * (MainViewModel.TILE_WIDTH / 2);
-            var displayX = CurrentPositionX - bounds.Left;
-            var displayY = CurrentPositionY - bounds.Top;
-            if ((int)(RotateAngle / 60) % 2 == 0)
+            var displayX = CurrentPositionX - m_Board.Bounds.Left;
+            var displayY = CurrentPositionY - m_Board.Bounds.Top;
+            if (IsPointingUp)
                 rowOffset = 0 - rowOffset;
             CurrentMargin = new Thickness(m_BaseMargin.Left + rotationModifier.Left + rowOffset + (displayX * MainViewModel.TILE_WIDTH), m_BaseMargin.Top + rotationModifier.Top + (displayY * MainViewModel.TILE_HEIGHT), m_BaseMargin.Right + rotationModifier.Right, m_BaseMargin.Bottom + rotationModifier.Bottom);
 
             foreach (var stuff in StuffOnTile)
                 stuff.RecalculateMargin(RotateAngle);
 
+            RecalculatePositions();
         }
 
-        public void GoUp(Thickness bounds)
+        public void GoUp()
         {
             CurrentPositionY--;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
         }
-        public void GoDown(Thickness bounds)
+        public void GoDown()
         {
             CurrentPositionY++;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
         }
-        public void GoRight(Thickness bounds)
+        public void GoRight()
         {
             CurrentPositionX++;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
         }
-        public void GoLeft(Thickness bounds)
+        public void GoLeft()
         {
             CurrentPositionX--;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
         }
-        public void RotateClockwise(Thickness bounds)
+        public void RotateClockwise()
         {
             RotateAngle = (RotateAngle + 60) % 360;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
         }
-        public void RotateCounterClockwise(Thickness bounds)
+        public void RotateCounterClockwise()
         {
             RotateAngle = (RotateAngle + 300) % 360;
-            RecalculateMargin(bounds);
+            RecalculateMargin();
+        }
+
+        public void PlaceOnBoard()
+        {
+            if (State != PlayingTileStateEnum.ActiveCorrect)
+                return;
+
+            State = PlayingTileStateEnum.Passive;
+
+            Level = m_Board.BoardMatrix[CurrentPositionX, CurrentPositionY].PlayingTiles.Count + 1;
+
+            StuffOnTile.AddItems(new List<AbstractStuffOnTile>
+            {
+                new LevelIndicator(LevelIndicator.TOP_MARGIN, Level),
+                new LevelIndicator(LevelIndicator.LEFT_MARGIN, Level),
+                new LevelIndicator(LevelIndicator.RIGHT_MARGIN, Level)
+            });
+
+            foreach (var p in m_CurrentPositions)
+                m_Board.BoardMatrix[(int)p.X, (int)p.Y].PlayingTiles.Add(this);
         }
     }
 }

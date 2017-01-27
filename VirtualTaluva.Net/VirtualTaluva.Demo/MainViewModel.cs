@@ -6,7 +6,7 @@ using GalaSoft.MvvmLight.CommandWpf;
 
 namespace VirtualTaluva.Demo
 {
-    public class MainViewModel : BaseViewModel
+    public class MainViewModel : BaseViewModel, IBoard
     {
         public const int NB_TILES = 200;
         public const double TILE_WIDTH = 69.282032;
@@ -14,10 +14,10 @@ namespace VirtualTaluva.Demo
 
         public PlayingTile CurrentTile { get; private set; }
 
-        [SuppressMessage("ReSharper", "PossibleLossOfFraction")]
-        private Thickness m_Bounds = new Thickness(NB_TILES/2, NB_TILES / 2, NB_TILES / 2, NB_TILES / 2);
+        private Thickness m_Bounds = new Thickness(NB_TILES/2.0, NB_TILES / 2.0, NB_TILES / 2.0, NB_TILES / 2.0);
+        public Thickness Bounds => m_Bounds;
 
-        private readonly BoardTile[,] m_Board = new BoardTile[NB_TILES, NB_TILES];
+        public BoardTile[,] BoardMatrix { get; } = new BoardTile[NB_TILES, NB_TILES];
 
         public FastObservableCollection<BoardTile> Board { get; } = new FastObservableCollection<BoardTile>();
         public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
@@ -36,6 +36,7 @@ namespace VirtualTaluva.Demo
         }
 
         public string ZoomValue => $"{m_Scale*100:0}%";
+        public int NbPlayingTiles => PlayingTiles.Count;
 
         private RelayCommand m_ZoomInCommand;
         public RelayCommand ZoomInCommand => m_ZoomInCommand ?? (m_ZoomInCommand = new RelayCommand(() => Scale *= 1.25, () => Scale < 5.96));
@@ -44,22 +45,22 @@ namespace VirtualTaluva.Demo
         public RelayCommand ZoomOutCommand => m_ZoomOutCommand ?? (m_ZoomOutCommand = new RelayCommand(() => Scale /= 1.25, () => Scale > 0.33));
 
         private RelayCommand m_RotateCommand;
-        public RelayCommand RotateCommand => m_RotateCommand ?? (m_RotateCommand = new RelayCommand(() => CurrentTile.RotateClockwise(m_Bounds)));
+        public RelayCommand RotateCommand => m_RotateCommand ?? (m_RotateCommand = new RelayCommand(() => CurrentTile.RotateClockwise()));
 
         private RelayCommand m_AntiRotateCommand;
-        public RelayCommand AntiRotateCommand => m_AntiRotateCommand ?? (m_AntiRotateCommand = new RelayCommand(() => CurrentTile.RotateCounterClockwise(m_Bounds)));
+        public RelayCommand AntiRotateCommand => m_AntiRotateCommand ?? (m_AntiRotateCommand = new RelayCommand(() => CurrentTile.RotateCounterClockwise()));
 
         private RelayCommand m_LeftCommand;
-        public RelayCommand LeftCommand => m_LeftCommand ?? (m_LeftCommand = new RelayCommand(() => CurrentTile.GoLeft(m_Bounds), () =>CurrentTile.CurrentPositionX > m_Bounds.Left + 1));
+        public RelayCommand LeftCommand => m_LeftCommand ?? (m_LeftCommand = new RelayCommand(() => CurrentTile.GoLeft(), () =>CurrentTile.CurrentPositionX > m_Bounds.Left + 1));
 
         private RelayCommand m_RightCommand;
-        public RelayCommand RightCommand => m_RightCommand ?? (m_RightCommand = new RelayCommand(() => CurrentTile.GoRight(m_Bounds), () => CurrentTile.CurrentPositionX < m_Bounds.Right - 1));
+        public RelayCommand RightCommand => m_RightCommand ?? (m_RightCommand = new RelayCommand(() => CurrentTile.GoRight(), () => CurrentTile.CurrentPositionX < m_Bounds.Right - 1));
 
         private RelayCommand m_UpCommand;
-        public RelayCommand UpCommand => m_UpCommand ?? (m_UpCommand = new RelayCommand(() => CurrentTile.GoUp(m_Bounds), () => CurrentTile.CurrentPositionY > m_Bounds.Top + 2));
+        public RelayCommand UpCommand => m_UpCommand ?? (m_UpCommand = new RelayCommand(() => CurrentTile.GoUp(), () => CurrentTile.CurrentPositionY > m_Bounds.Top + 2));
 
         private RelayCommand m_DownCommand;
-        public RelayCommand DownCommand => m_DownCommand ?? (m_DownCommand = new RelayCommand(() => CurrentTile.GoDown(m_Bounds), () => CurrentTile.CurrentPositionY < m_Bounds.Bottom));
+        public RelayCommand DownCommand => m_DownCommand ?? (m_DownCommand = new RelayCommand(() => CurrentTile.GoDown(), () => CurrentTile.CurrentPositionY < m_Bounds.Bottom));
 
         private RelayCommand m_MoreLeftCommand;
         public RelayCommand MoreLeftCommand => m_MoreLeftCommand ?? (m_MoreLeftCommand = new RelayCommand(() => AddBoardTileColumn(AddBoardTileLeft), () => m_Bounds.Left > 0));
@@ -78,21 +79,21 @@ namespace VirtualTaluva.Demo
         
         public MainViewModel()
         {
-            for (int i = 99; i < 101; ++i)
+            for (int i = NB_TILES / 2 - 1; i < NB_TILES / 2 + 1; ++i)
                 for (int k = 0; k < 1; ++k)
                 {
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
                 }
-            PlayingTiles.Add(CurrentTile = new PlayingTile());
+            PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
             RefreshBoard();
         }
 
         private void AddBoardTileLeft(int row)
         {
-            int i = 100;
+            int i = NB_TILES / 2;
 
-            for (; i >= 0 && m_Board[i, row] != null; --i)
+            for (; i >= 0 && BoardMatrix[i, row] != null; --i)
             {
                 //Do nothing, just navigate thru the board !
             }
@@ -103,14 +104,14 @@ namespace VirtualTaluva.Demo
 
         private void AddBoardTileRight(int row)
         {
-            int i = 100;
+            int i = NB_TILES / 2;
 
-            for (; i < 200 && m_Board[i, row] != null; ++i)
+            for (; i < NB_TILES && BoardMatrix[i, row] != null; ++i)
             {
                 //Do nothing, just navigate thru the board !
             }
 
-            if (i < 200)
+            if (i < NB_TILES)
                 AddBoardTile(row, i);
         }
 
@@ -134,17 +135,17 @@ namespace VirtualTaluva.Demo
             if (row > m_Bounds.Bottom)
                 m_Bounds.Bottom = row;
 
-            var bt = new BoardTile(i, row);
+            var bt = new BoardTile(this, i, row);
             Board.Add(bt);
-            m_Board[i, row] = bt;
+            BoardMatrix[i, row] = bt;
         }
 
         private void AddBoardTileRow(int row)
         {
-            for (int i = 100; i > m_Bounds.Left; i--)
+            for (int i = NB_TILES / 2; i > m_Bounds.Left; i--)
                 AddBoardTileLeft(row);
 
-            for (int i = 100; i < m_Bounds.Right; i++)
+            for (int i = NB_TILES / 2; i < m_Bounds.Right; i++)
                 AddBoardTileRight(row);
 
             RefreshBoard();
@@ -163,12 +164,13 @@ namespace VirtualTaluva.Demo
             foreach (var boardTile in Board)
                 boardTile.RefreshMargin();
 
-            CurrentTile.RecalculateMargin(m_Bounds);
+            foreach (var playingTile in PlayingTiles)
+                playingTile.RecalculateMargin();
         }
         private void Accept()
         {
-            CurrentTile.State = PlayingTileStateEnum.Passive;
-            PlayingTiles.Add(CurrentTile = new PlayingTile());
+            CurrentTile.PlaceOnBoard();
+            PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
             RefreshBoard();
         }
     }

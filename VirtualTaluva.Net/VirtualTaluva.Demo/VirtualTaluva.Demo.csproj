@@ -84,6 +84,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="BoardTile.cs" />
+    <Compile Include="IBoard.cs" />
     <Compile Include="PlayingTile.cs" />
     <Compile Include="ShaderEffects\AngularGradientEffect.cs" />
     <Compile Include="StuffOnTile\AbstractStuffOnTile.cs" />

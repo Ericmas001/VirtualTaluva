@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace VirtualTaluva.Demo.StuffOnTile
 {
     public class LevelIndicator : AbstractStuffOnTile
     {
+        public int Level { get; }
         public static readonly Thickness TOP_MARGIN = new Thickness(0, -75, 0, 0);
         public static readonly Thickness LEFT_MARGIN = new Thickness(-72, 58, 0, 0);
         public static readonly Thickness RIGHT_MARGIN = new Thickness(75, 58, 0, 0);
@@ -45,8 +42,9 @@ namespace VirtualTaluva.Demo.StuffOnTile
         }
         public double AntiRotateAngle => 360 - m_Angle;
 
-        public LevelIndicator(Thickness baseMargin)
+        public LevelIndicator(Thickness baseMargin, int level)
         {
+            Level = level;
             m_BaseMargin = baseMargin;
         }
 
