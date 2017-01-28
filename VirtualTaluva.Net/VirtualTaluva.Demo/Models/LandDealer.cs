@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Com.Ericmas001.Common;
 using VirtualTaluva.Demo.Enums;
 
 namespace VirtualTaluva.Demo.Models
 {
     public class LandDealer
     {
+        private readonly IBoard m_Board;
+        private readonly int m_NbCards;
+
         private class LandDistribution
         {
             /*
@@ -82,7 +83,40 @@ namespace VirtualTaluva.Demo.Models
             new LandDistribution(LandEnum.Lagoon, LandEnum.Quarry, 1),
             new LandDistribution(LandEnum.Lagoon, LandEnum.Lagoon, 1),
         };
+        private Stack<PlayingTile> Deck { get; set; }
 
-        //var deck = new Stack<PlayingCard>();
+        public PlayingTile DealTile()
+        {
+            return Deck.Pop();
+        }
+
+        public void FreshDeck()
+        {
+            Deck = GetShuffledDeck();
+        }
+
+        private Stack<PlayingTile> GetShuffledDeck()
+        {
+            var deck = new Stack<PlayingTile>();
+            var remaining = GetSortedDeck();
+            while (remaining.Count > 48 - m_NbCards)
+            {
+                var id = RandomUtil.RandomWithMax(remaining.Count - 1);
+                deck.Push(remaining[id]);
+                remaining.RemoveAt(id);
+            }
+            return deck;
+        }
+
+        private List<PlayingTile> GetSortedDeck()
+        {
+            return m_Distribution.SelectMany(x => Enumerable.Range(0, x.Nb).Select(y => new PlayingTile(m_Board, x.LeftLand, x.RightLand))).ToList();
+        }
+
+        public LandDealer(IBoard board, int nbCards)
+        {
+            m_Board = board;
+            m_NbCards = nbCards;
+        }
     }
 }

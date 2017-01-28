@@ -17,11 +17,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary>
-                    <LinearGradientBrush x:Key="MyLinearGradientBrush" EndPoint="0,0" StartPoint="1,0" >
-                        <GradientStop Color="Blue" Offset="0.0"/>
-                        <GradientStop Color="Green" Offset="0.5"/>
-                        <GradientStop Color="Red" Offset="1.0"/>
-                    </LinearGradientBrush>
                     <InputBindingCollection x:Key="MyInputBindings">
                         <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Down, Keys=Control}" Command="{Binding ZoomOutCommand}" />
                         <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Up, Keys=Control}" Command="{Binding ZoomInCommand}" />
@@ -64,7 +59,7 @@
             <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding AcceptCommand}">GO</Button>
             <TextBlock Text="{Binding CurrentTilePositions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="25,5,2,5" />
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
+        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="CadetBlue">
             <ScrollViewer.Style>
                 <Style>
                     <Setter Property="helpers:InputBindingHelper.InputBindings" Value="{StaticResource MyInputBindings}" />
@@ -83,7 +78,7 @@
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Grid>
-                                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="{Binding Margin}" Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
+                                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="CadetBlue" Margin="{Binding Margin}" Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
                                 <TextBlock Text="{Binding Pos}" Margin="{Binding PosMargin}" />
                             </Grid>
                         </DataTemplate>

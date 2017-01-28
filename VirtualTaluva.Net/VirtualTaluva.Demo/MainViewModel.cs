@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
+using Com.Ericmas001.Common;
 using Com.Ericmas001.Windows;
 using GalaSoft.MvvmLight.CommandWpf;
 using VirtualTaluva.Demo.Enums;
@@ -80,6 +81,7 @@ namespace VirtualTaluva.Demo
         public RelayCommand MoreDownCommand => m_MoreDownCommand ?? (m_MoreDownCommand = new RelayCommand(() => AddBoardTileRow((int)m_Bounds.Bottom + 1), () => m_Bounds.Bottom < NB_TILES));
 
         private RelayCommand m_AcceptCommand;
+        public LandDealer Dealer { get; }
         public RelayCommand AcceptCommand => m_AcceptCommand ?? (m_AcceptCommand = new RelayCommand(Accept, () => CurrentTile.State == PlayingTileStateEnum.ActiveCorrect));
         
         public MainViewModel()
@@ -90,6 +92,8 @@ namespace VirtualTaluva.Demo
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
                 }
+            Dealer = new LandDealer(this,48);
+            Dealer.FreshDeck();
             PlayingTiles.Add(GenerateNewPlayingTile());
             RefreshBoard();
         }
@@ -183,9 +187,11 @@ namespace VirtualTaluva.Demo
         [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
         private PlayingTile GenerateNewPlayingTile()
         {
-            CurrentTile = new PlayingTile(this, LandEnum.Lagoon, LandEnum.Grass);
+            CurrentTile = Dealer.DealTile();
             CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
             CurrentTile.PlaceOnBoard(NB_TILES / 2, NB_TILES / 2);
+            for(int i = 0; i < RandomUtil.RandomWithMax(5); ++i)
+                CurrentTile.RotateClockwise();
             return CurrentTile;
         }
     }
