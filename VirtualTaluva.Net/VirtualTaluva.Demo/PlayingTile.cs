@@ -147,12 +147,31 @@ namespace VirtualTaluva.Demo
                 {
                     if (m_CurrentPositions.All(p => !m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Any()))
                     {
-                        //if (m_Board.NbPlayingTiles == 1)
+                        if (m_Board.NbPlayingTiles == 1)
                             State = PlayingTileStateEnum.ActiveCorrect;
-                        //else if (m_CurrentPositions.Any(p => (!m_Board.BoardMatrix[(int) p.X - 1, (int) p.Y]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X + 1, (int) p.Y]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X, (int) p.Y - 1]?.PlayingTiles.Any() ?? false) || (!m_Board.BoardMatrix[(int) p.X, (int) p.Y + 1]?.PlayingTiles.Any() ?? false)))
-                        //    State = PlayingTileStateEnum.ActiveCorrect;
-                        //else
-                        //    State = PlayingTileStateEnum.ActiveProblem;
+                        else
+                        {
+                            foreach (var p in CurrentPositions)
+                            {
+                                var pIsOnOddRow = (int)p.Y % 2 == 0;
+                                var points = new List<Point>
+                                {
+                                    new Point(p.X - 1, p.Y),
+                                    new Point(p.X + 1, p.Y),
+                                    new Point(p.X, p.Y - 1),
+                                    new Point(p.X, p.Y + 1),
+                                    new Point(pIsOnOddRow ? p.X + 1 : p.X - 1, p.Y + 1),
+                                    new Point(pIsOnOddRow ? p.X + 1 : p.X - 1, p.Y - 1),
+
+                                };
+                                if(points.Any(q => m_Board.BoardMatrix[(int)q.X, (int)q.Y] != null && m_Board.BoardMatrix[(int)q.X, (int)q.Y].PlayingTiles.Any()))
+                                {
+                                    State = PlayingTileStateEnum.ActiveCorrect;
+                                    return;
+                                }
+                            }
+                            State = PlayingTileStateEnum.ActiveProblem;
+                        }
                     }
                     else if (m_CurrentPositions.Select(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Last()).Distinct().Count() == 1)
                         State = PlayingTileStateEnum.ActiveProblem;

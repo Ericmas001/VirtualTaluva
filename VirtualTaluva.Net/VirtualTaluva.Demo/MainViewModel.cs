@@ -82,8 +82,8 @@ namespace VirtualTaluva.Demo
         
         public MainViewModel()
         {
-            for (int i = NB_TILES / 2 - 3; i < NB_TILES / 2 + 3; ++i)
-                for (int k = 0; k < 6; ++k)
+            for (int i = NB_TILES / 2 - 5; i < NB_TILES / 2 + 5; ++i)
+                for (int k = 0; k < 10; ++k)
                 {
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
