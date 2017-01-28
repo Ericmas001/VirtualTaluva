@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:VirtualTaluva.Demo"
         xmlns:markupExtensions="clr-namespace:Com.Ericmas001.Windows.MarkupExtensions;assembly=Com.Ericmas001.Windows"
         xmlns:stuff="clr-namespace:VirtualTaluva.Demo.Models.StuffOnTile"
-        xmlns:util="clr-namespace:VirtualTaluva.Demo.Util"
+        xmlns:helpers="clr-namespace:Com.Ericmas001.Windows.Xaml.Helpers;assembly=Com.Ericmas001.Windows.Xaml"
+        xmlns:effects="clr-namespace:Com.Ericmas001.Windows.Xaml.Effects;assembly=Com.Ericmas001.Windows.Xaml"
         mc:Ignorable="d"
         Title="MainWindow" Height="621" Width="1125.728">
     <Window.DataContext>
@@ -24,8 +25,8 @@
                     <InputBindingCollection x:Key="MyInputBindings">
                         <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Down, Keys=Control}" Command="{Binding ZoomOutCommand}" />
                         <MouseBinding Gesture="{markupExtensions:MouseWheel Direction=Up, Keys=Control}" Command="{Binding ZoomInCommand}" />
-                        <KeyBinding Key="Space" Command="{Binding RotateCommand}" />
-                        <KeyBinding Key="Back" Command="{Binding AntiRotateCommand}" />
+                        <KeyBinding Key="Tab" Command="{Binding RotateCommand}" />
+                        <KeyBinding Key="Tab" Modifiers="Control" Command="{Binding AntiRotateCommand}" />
                         <KeyBinding Key="Left" Command="{Binding LeftCommand}" />
                         <KeyBinding Key="Right" Command="{Binding RightCommand}" />
                         <KeyBinding Key="Up" Command="{Binding UpCommand}" />
@@ -42,7 +43,7 @@
     </Window.Resources>
     <Window.Style>
         <Style>
-            <Setter Property="util:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+            <Setter Property="helpers:InputBindingHelper.InputBindings" Value="{StaticResource MyInputBindings}" />
         </Style>
     </Window.Style>
     <DockPanel>
@@ -66,7 +67,7 @@
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
             <ScrollViewer.Style>
                 <Style>
-                    <Setter Property="util:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+                    <Setter Property="helpers:InputBindingHelper.InputBindings" Value="{StaticResource MyInputBindings}" />
                 </Style>
             </ScrollViewer.Style>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
@@ -122,7 +123,7 @@
                                                 <DockPanel>
                                                     <Rectangle Fill="White" Width="100" Height="100">
                                                         <Rectangle.Effect>
-                                                            <util:AngularGradientEffect CenterPoint="0.5,0.55" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
+                                                            <effects:AngularGradientEffect CenterPoint="0.5,0.55" PrimaryColor="{Binding TopColor}" SecondaryColor="{Binding LeftColor}" ThirdColor="{Binding RightColor}" />
                                                         </Rectangle.Effect>
                                                     </Rectangle>
                                                 </DockPanel>

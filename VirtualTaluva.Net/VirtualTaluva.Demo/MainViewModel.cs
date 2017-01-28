@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using Com.Ericmas001.Windows;
 using GalaSoft.MvvmLight.CommandWpf;
+using VirtualTaluva.Demo.Enums;
 using VirtualTaluva.Demo.Models;
 
 namespace VirtualTaluva.Demo
@@ -24,7 +25,7 @@ namespace VirtualTaluva.Demo
         public FastObservableCollection<BoardTile> Board { get; } = new FastObservableCollection<BoardTile>();
         public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
 
-        public string CurrentTilePositions => $"{CurrentTile.IsOnOddRow} - {string.Join(" ", CurrentTile.CurrentPositions.Select(p => $"({p.X},{p.Y})"))}";
+        public string CurrentTilePositions => $"{CurrentTile.IsOnOddRow} - {string.Join(" ", CurrentTile.Lands.Select(p => $"({p.LandType.ToString()},{p.X},{p.Y})"))}";
 
         private double m_Scale = 1;
        
@@ -89,8 +90,7 @@ namespace VirtualTaluva.Demo
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
                 }
-            PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
-            CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
+            PlayingTiles.Add(GenerateNewPlayingTile());
             RefreshBoard();
         }
 
@@ -176,9 +176,17 @@ namespace VirtualTaluva.Demo
         private void Accept()
         {
             CurrentTile.PlaceOnBoard();
-            PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
-            CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
+            PlayingTiles.Add(GenerateNewPlayingTile());
             RefreshBoard();
+        }
+
+        [SuppressMessage("ReSharper", "ExplicitCallerInfoArgument")]
+        private PlayingTile GenerateNewPlayingTile()
+        {
+            CurrentTile = new PlayingTile(this, LandEnum.Lagoon, LandEnum.Grass);
+            CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
+            CurrentTile.PlaceOnBoard(NB_TILES / 2, NB_TILES / 2);
+            return CurrentTile;
         }
     }
 }

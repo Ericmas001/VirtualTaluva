@@ -3,8 +3,10 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
 using System.Windows.Media;
+using Com.Ericmas001.Common;
 using Com.Ericmas001.Windows;
 using Com.Ericmas001.Windows.ViewModels;
+using VirtualTaluva.Demo.Enums;
 using VirtualTaluva.Demo.Models.StuffOnTile;
 
 namespace VirtualTaluva.Demo.Models
@@ -17,7 +19,7 @@ namespace VirtualTaluva.Demo.Models
     }
     public class PlayingTile : BaseViewModel
     {
-        public event EmptyHandler PositionChanged = delegate {};
+        public event EmptyHandler PositionChanged = delegate { };
         private readonly IBoard m_Board;
         private static readonly Thickness m_BaseMargin = new Thickness(MainViewModel.TILE_WIDTH, 10, 0, 0);
         private static readonly Dictionary<double, Thickness> m_RotationMarginModifier = new Dictionary<double, Thickness>
@@ -30,8 +32,7 @@ namespace VirtualTaluva.Demo.Models
             {300, new Thickness(-43,-15.5,0,0)},
         };
 
-
-        private Point[] m_CurrentPositions = new Point[0];
+        public Land Volcano { get; }
         public int Level { get; private set; }
         private PlayingTileStateEnum m_State = PlayingTileStateEnum.ActiveCorrect;
         private int m_CurrentPositionX;
@@ -73,13 +74,13 @@ namespace VirtualTaluva.Demo.Models
         public int CurrentPositionX
         {
             get { return m_CurrentPositionX; }
-            set { Set(ref m_CurrentPositionX, value); }
+            private set { Set(ref m_CurrentPositionX, value); }
         }
 
         public int CurrentPositionY
         {
             get { return m_CurrentPositionY; }
-            set { Set(ref m_CurrentPositionY, value); }
+            private set { Set(ref m_CurrentPositionY, value); }
         }
 
         public Brush StrokeColor
@@ -98,62 +99,121 @@ namespace VirtualTaluva.Demo.Models
         }
         public double StrokeThickness => State == PlayingTileStateEnum.Passive ? 1 : 3;
         public double AntiRotateAngle => 360 - m_Angle;
+        public Color TopColor => ColorFromLand(0);
+        public Color LeftColor => ColorFromLand(2);
+        public Color RightColor => ColorFromLand(1);
 
+        private Color ColorFromLand(int i)
+        {
+            var convertFromString = ColorConverter.ConvertFromString(Lands[i].LandType.Color());
+            if (convertFromString != null)
+                return (Color)convertFromString;
+            return Colors.Black;
+        }
 
-        public PlayingTile(IBoard board, int x, int y)
+        public PlayingTile(IBoard board, LandEnum landLeft, LandEnum landRight)
         {
             m_Board = board;
-            CurrentPositionX = x;
-            CurrentPositionY = y;
-            RecalculatePositions();
+            Lands = new[]
+            {
+                new Land(this, LandEnum.Volcano, CurrentPositionX, CurrentPositionY - 1),
+                new Land(this, landLeft, CurrentPositionX, CurrentPositionY),
+                new Land(this, landRight, CurrentPositionX + 1, CurrentPositionY)
+            };
+            Volcano = Lands.First(l => l.LandType == LandEnum.Volcano);
         }
 
         private void RecalculatePositions()
         {
             if (IsPointingUp)
+            {
+                Land[] landsFromUpperLeftCorner =
+                {
+                    Lands[((int) RotateAngle / 120 + 0) % 3],
+                    Lands[((int) RotateAngle / 120 + 1) % 3],
+                    Lands[((int) RotateAngle / 120 + 2) % 3],
+                };
+
                 if (IsOnOddRow)
-                    m_CurrentPositions = new[]
-                    {
-                        new Point(CurrentPositionX + 1, CurrentPositionY - 1),
-                        new Point(CurrentPositionX, CurrentPositionY),
-                        new Point(CurrentPositionX + 1, CurrentPositionY),
-                    };
+                {
+                    landsFromUpperLeftCorner[0].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[0].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[1].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[1].Y = CurrentPositionY;
+
+                    landsFromUpperLeftCorner[2].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[2].Y = CurrentPositionY;
+                }
                 else
-                    m_CurrentPositions = new[]
-                    {
-                        new Point(CurrentPositionX, CurrentPositionY - 1),
-                        new Point(CurrentPositionX, CurrentPositionY),
-                        new Point(CurrentPositionX + 1, CurrentPositionY),
-                    };
-            else if (IsOnOddRow)
-                m_CurrentPositions = new[]
                 {
-                    new Point(CurrentPositionX, CurrentPositionY - 1),
-                    new Point(CurrentPositionX + 1, CurrentPositionY - 1),
-                    new Point(CurrentPositionX, CurrentPositionY),
-                };
+                    landsFromUpperLeftCorner[0].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[0].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[1].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[1].Y = CurrentPositionY;
+
+                    landsFromUpperLeftCorner[2].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[2].Y = CurrentPositionY;
+                }
+            }
             else
-                m_CurrentPositions = new[]
+            {
+                Land[] landsFromUpperLeftCorner =
                 {
-                    new Point(CurrentPositionX, CurrentPositionY - 1),
-                    new Point(CurrentPositionX + 1, CurrentPositionY - 1),
-                    new Point(CurrentPositionX + 1, CurrentPositionY),
+                    Lands[((int) RotateAngle / 120 + 1) % 3],
+                    Lands[((int) RotateAngle / 120 + 0) % 3],
+                    Lands[((int) RotateAngle / 120 + 2) % 3],
                 };
+
+                if (IsOnOddRow)
+                {
+                    landsFromUpperLeftCorner[0].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[0].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[1].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[1].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[2].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[2].Y = CurrentPositionY;
+                }
+                else
+                {
+                    landsFromUpperLeftCorner[0].X = CurrentPositionX;
+                    landsFromUpperLeftCorner[0].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[1].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[1].Y = CurrentPositionY - 1;
+
+                    landsFromUpperLeftCorner[2].X = CurrentPositionX + 1;
+                    landsFromUpperLeftCorner[2].Y = CurrentPositionY;
+                }
+            }
             if (State != PlayingTileStateEnum.Passive)
             {
-                if (m_CurrentPositions.Any(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y] == null))
+                //If there is no board tile under every land, PROBLEM
+                if (Lands.Any(p => m_Board.BoardMatrix[p.X, p.Y] == null))
                     State = PlayingTileStateEnum.ActiveProblem;
-                else if (m_CurrentPositions.Select(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Count).Distinct().Count() == 1)
+
+                //If every land would be at the same level, it's a good start
+                else if (Lands.Select(p => m_Board.BoardMatrix[p.X, p.Y].Lands.Count).Distinct().Count() == 1)
                 {
-                    if (m_CurrentPositions.All(p => !m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Any()))
+
+                    //If spaces are empty under every land, there is a chance it would be good
+                    if (Lands.All(p => !m_Board.BoardMatrix[p.X, p.Y].Lands.Any()))
                     {
+
+                        // If this is the first tile, it's clearly CORRECT
                         if (m_Board.NbPlayingTiles == 1)
                             State = PlayingTileStateEnum.ActiveCorrect;
+
+                        // If this is not the first tile, there are some placement rules
                         else
                         {
-                            foreach (var p in CurrentPositions)
+                            //We need to find at least 1 land that is touching one already on board
+                            foreach (var p in Lands)
                             {
-                                var pIsOnOddRow = (int)p.Y % 2 == 0;
+                                var pIsOnOddRow = p.Y % 2 == 0;
                                 var points = new List<Point>
                                 {
                                     new Point(p.X - 1, p.Y),
@@ -164,20 +224,33 @@ namespace VirtualTaluva.Demo.Models
                                     new Point(pIsOnOddRow ? p.X + 1 : p.X - 1, p.Y - 1),
 
                                 };
-                                if(points.Any(q => m_Board.BoardMatrix[(int)q.X, (int)q.Y] != null && m_Board.BoardMatrix[(int)q.X, (int)q.Y].PlayingTiles.Any()))
+
+                                //If there is one land already on board touching the land, CORRECT
+                                if (points.Any(q => m_Board.BoardMatrix[(int)q.X, (int)q.Y] != null && m_Board.BoardMatrix[(int)q.X, (int)q.Y].Lands.Any()))
                                 {
                                     State = PlayingTileStateEnum.ActiveCorrect;
                                     return;
                                 }
                             }
+
+                            //There was no land touching one already on the board, PROBLEM
                             State = PlayingTileStateEnum.ActiveProblem;
                         }
                     }
-                    else if (m_CurrentPositions.Select(p => m_Board.BoardMatrix[(int) p.X, (int) p.Y].PlayingTiles.Last()).Distinct().Count() == 1)
+
+                    //There is same level land under each land, but they're all from the same tile, PROBLEM 
+                    else if (Lands.Select(p => m_Board.BoardMatrix[p.X, p.Y].Lands.Last().ParentTile).Distinct().Count() == 1)
                         State = PlayingTileStateEnum.ActiveProblem;
+
+                    //There is same level land under each land, and they're not all from the same tile, it's a good start
                     else
-                        State = PlayingTileStateEnum.ActiveCorrect;
+                    {
+                        // If volcano is over another volcano, CORRECT, or else it's a PROBLEM
+                        State = m_Board.BoardMatrix[Volcano.X,Volcano.Y].Lands.Last().LandType == LandEnum.Volcano ? PlayingTileStateEnum.ActiveCorrect : PlayingTileStateEnum.ActiveProblem;
+                    }
                 }
+
+                //All the lands are not at the same level, PROBLEM
                 else
                     State = PlayingTileStateEnum.ActiveProblem;
             }
@@ -195,7 +268,7 @@ namespace VirtualTaluva.Demo.Models
         public bool IsPointingUp => (int)(RotateAngle / 60) % 2 == 0;
         public bool IsOnOddRow => CurrentPositionY % 2 == 0;
 
-        public Point[] CurrentPositions => m_CurrentPositions;
+        public Land[] Lands { get; }
 
         public void RecalculateMargin()
         {
@@ -251,8 +324,7 @@ namespace VirtualTaluva.Demo.Models
 
             State = PlayingTileStateEnum.Passive;
 
-            var pos = CurrentPositions.First();
-            Level = m_Board.BoardMatrix[(int)pos.X, (int)pos.Y].PlayingTiles.Count + 1;
+            Level = m_Board.BoardMatrix[Volcano.X, Volcano.Y].Lands.Count + 1;
 
             StuffOnTile.AddItems(new List<AbstractStuffOnTile>
             {
@@ -261,8 +333,14 @@ namespace VirtualTaluva.Demo.Models
                 new LevelIndicator(LevelIndicator.RIGHT_MARGIN, Level)
             });
 
-            foreach (var p in m_CurrentPositions)
-                m_Board.BoardMatrix[(int)p.X, (int)p.Y].PlayingTiles.Add(this);
+            foreach (var p in Lands)
+                m_Board.BoardMatrix[p.X, p.Y].Lands.Add(p);
+        }
+        public void PlaceOnBoard(int x, int y)
+        {
+            CurrentPositionX = x;
+            CurrentPositionY = y;
+            RecalculateMargin();
         }
     }
 }

@@ -35,12 +35,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Com.Ericmas001.Windows, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Com.Ericmas001.Windows.0.4.5\lib\net45\Com.Ericmas001.Windows.dll</HintPath>
+    <Reference Include="Com.Ericmas001.Common, Version=0.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Com.Ericmas001.Common.0.4.6\lib\net40\Com.Ericmas001.Common.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Com.Ericmas001.Windows.Xaml, Version=0.4.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Com.Ericmas001.Windows.Xaml.0.4.5\lib\net45\Com.Ericmas001.Windows.Xaml.dll</HintPath>
+    <Reference Include="Com.Ericmas001.Windows, Version=0.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Com.Ericmas001.Windows.0.4.6\lib\net45\Com.Ericmas001.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Com.Ericmas001.Windows.Xaml, Version=0.4.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Com.Ericmas001.Windows.Xaml.0.4.6\lib\net45\Com.Ericmas001.Windows.Xaml.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="GalaSoft.MvvmLight, Version=5.3.0.19026, Culture=neutral, PublicKeyToken=e7570ab207bcb616, processorArchitecture=MSIL">
@@ -83,10 +87,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Enums\LandEnum.cs" />
     <Compile Include="Models\BoardTile.cs" />
     <Compile Include="Models\IBoard.cs" />
+    <Compile Include="Models\Land.cs" />
+    <Compile Include="Models\LandDealer.cs" />
     <Compile Include="Models\PlayingTile.cs" />
-    <Compile Include="Util\AngularGradientEffect.cs" />
     <Compile Include="Models\StuffOnTile\AbstractStuffOnTile.cs" />
     <Compile Include="Models\StuffOnTile\LevelIndicator.cs" />
     <Page Include="MainWindow.xaml">
@@ -97,7 +103,6 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Util\Attach.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -128,15 +133,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Resources\AngularGradientEffect.hlsl" />
-    <Resource Include="Resources\AngularGradientEffect.ps" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Enums\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
