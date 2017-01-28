@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using Com.Ericmas001.Windows;
+using Com.Ericmas001.Windows.ViewModels;
 using VirtualTaluva.Demo.StuffOnTile;
 
 namespace VirtualTaluva.Demo
@@ -16,6 +17,7 @@ namespace VirtualTaluva.Demo
     }
     public class PlayingTile : BaseViewModel
     {
+        public event EmptyHandler PositionChanged = delegate {};
         private readonly IBoard m_Board;
         private static readonly Thickness m_BaseMargin = new Thickness(MainViewModel.TILE_WIDTH, 10, 0, 0);
         private static readonly Dictionary<double, Thickness> m_RotationMarginModifier = new Dictionary<double, Thickness>
@@ -112,7 +114,7 @@ namespace VirtualTaluva.Demo
                 if (IsOnOddRow)
                     m_CurrentPositions = new[]
                     {
-                        new Point(CurrentPositionX, CurrentPositionY - 1),
+                        new Point(CurrentPositionX + 1, CurrentPositionY - 1),
                         new Point(CurrentPositionX, CurrentPositionY),
                         new Point(CurrentPositionX + 1, CurrentPositionY),
                     };
@@ -120,14 +122,14 @@ namespace VirtualTaluva.Demo
                     m_CurrentPositions = new[]
                     {
                         new Point(CurrentPositionX, CurrentPositionY - 1),
-                        new Point(CurrentPositionX - 1, CurrentPositionY),
                         new Point(CurrentPositionX, CurrentPositionY),
+                        new Point(CurrentPositionX + 1, CurrentPositionY),
                     };
             else if (IsOnOddRow)
                 m_CurrentPositions = new[]
                 {
                     new Point(CurrentPositionX, CurrentPositionY - 1),
-                    new Point(CurrentPositionX - 1, CurrentPositionY - 1),
+                    new Point(CurrentPositionX + 1, CurrentPositionY - 1),
                     new Point(CurrentPositionX, CurrentPositionY),
                 };
             else
@@ -135,7 +137,7 @@ namespace VirtualTaluva.Demo
                 {
                     new Point(CurrentPositionX, CurrentPositionY - 1),
                     new Point(CurrentPositionX + 1, CurrentPositionY - 1),
-                    new Point(CurrentPositionX, CurrentPositionY),
+                    new Point(CurrentPositionX + 1, CurrentPositionY),
                 };
             if (State != PlayingTileStateEnum.Passive)
             {
@@ -160,6 +162,7 @@ namespace VirtualTaluva.Demo
                 else
                     State = PlayingTileStateEnum.ActiveProblem;
             }
+            PositionChanged();
         }
 
 
@@ -172,6 +175,8 @@ namespace VirtualTaluva.Demo
 
         public bool IsPointingUp => (int)(RotateAngle / 60) % 2 == 0;
         public bool IsOnOddRow => CurrentPositionY % 2 == 0;
+
+        public Point[] CurrentPositions => m_CurrentPositions;
 
         public void RecalculateMargin()
         {
@@ -227,7 +232,8 @@ namespace VirtualTaluva.Demo
 
             State = PlayingTileStateEnum.Passive;
 
-            Level = m_Board.BoardMatrix[CurrentPositionX, CurrentPositionY].PlayingTiles.Count + 1;
+            var pos = CurrentPositions.First();
+            Level = m_Board.BoardMatrix[(int)pos.X, (int)pos.Y].PlayingTiles.Count + 1;
 
             StuffOnTile.AddItems(new List<AbstractStuffOnTile>
             {

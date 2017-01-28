@@ -16,7 +16,10 @@ namespace VirtualTaluva.Demo
         public Thickness Margin =>  new Thickness((m_X - XOffset) * MainViewModel.TILE_WIDTH - (m_Y % 2 * (MainViewModel.TILE_WIDTH / 2)), (m_Y - YOffset) * MainViewModel.TILE_HEIGHT, 0, 0);
 
         public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
-        
+
+        public string Pos => $"{m_X},{m_Y}";
+        public Thickness PosMargin => new Thickness((m_X - XOffset) * MainViewModel.TILE_WIDTH - (m_Y % 2 * (MainViewModel.TILE_WIDTH / 2)) + 25, (m_Y - YOffset) * MainViewModel.TILE_HEIGHT + 25, 0, 0);
+
         public BoardTile(IBoard board, int x, int y)
         {
             m_X = x;

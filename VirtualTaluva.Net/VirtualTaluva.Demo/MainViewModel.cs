@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Windows;
 using Com.Ericmas001.Windows;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -21,6 +22,8 @@ namespace VirtualTaluva.Demo
 
         public FastObservableCollection<BoardTile> Board { get; } = new FastObservableCollection<BoardTile>();
         public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
+
+        public string CurrentTilePositions => $"{CurrentTile.IsOnOddRow} - {string.Join(" ", CurrentTile.CurrentPositions.Select(p => $"({p.X},{p.Y})"))}";
 
         private double m_Scale = 1;
        
@@ -79,13 +82,14 @@ namespace VirtualTaluva.Demo
         
         public MainViewModel()
         {
-            for (int i = NB_TILES / 2 - 1; i < NB_TILES / 2 + 1; ++i)
-                for (int k = 0; k < 1; ++k)
+            for (int i = NB_TILES / 2 - 3; i < NB_TILES / 2 + 3; ++i)
+                for (int k = 0; k < 6; ++k)
                 {
                     AddBoardTileLeft(i);
                     AddBoardTileRight(i);
                 }
             PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
+            CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
             RefreshBoard();
         }
 
@@ -166,11 +170,13 @@ namespace VirtualTaluva.Demo
 
             foreach (var playingTile in PlayingTiles)
                 playingTile.RecalculateMargin();
+
         }
         private void Accept()
         {
             CurrentTile.PlaceOnBoard();
             PlayingTiles.Add(CurrentTile = new PlayingTile(this, NB_TILES / 2, NB_TILES / 2));
+            CurrentTile.PositionChanged += () => RaisePropertyChanged(nameof(CurrentTilePositions));
             RefreshBoard();
         }
     }

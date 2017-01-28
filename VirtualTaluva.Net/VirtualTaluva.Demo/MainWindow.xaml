@@ -8,7 +8,7 @@
         xmlns:shaderEffects="clr-namespace:VirtualTaluva.Demo.ShaderEffects"
         xmlns:stuff="clr-namespace:VirtualTaluva.Demo.StuffOnTile"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="638.728">
+        Title="MainWindow" Height="621" Width="1125.728">
     <Window.DataContext>
         <local:MainViewModel />
     </Window.DataContext>
@@ -61,6 +61,7 @@
             <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding MoreDownCommand}">▼+</Button>
             <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreRightCommand}">▶+</Button>
             <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding AcceptCommand}">GO</Button>
+            <TextBlock Text="{Binding CurrentTilePositions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="25,5,2,5" />
         </StackPanel>
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
             <ScrollViewer.Style>
@@ -80,7 +81,10 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="{Binding Margin}" Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
+                            <Grid>
+                                <Path d:LayoutOverrides="None" d:LastTangent="0,0" Stroke="Black" Fill="Gray" Margin="{Binding Margin}" Data="M34.641016,0 L69.282032,20 69.282032,60 34.641016,80 0,60 0,20 34.641016,0 z"/>
+                                <TextBlock Text="{Binding Pos}" Margin="{Binding PosMargin}" />
+                            </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
