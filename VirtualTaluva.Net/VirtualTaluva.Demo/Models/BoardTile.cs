@@ -2,7 +2,7 @@
 using System.Windows;
 using Com.Ericmas001.Windows;
 
-namespace VirtualTaluva.Demo
+namespace VirtualTaluva.Demo.Models
 {
     public class BoardTile : BaseViewModel
     {

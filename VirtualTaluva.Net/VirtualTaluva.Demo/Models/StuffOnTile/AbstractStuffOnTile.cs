@@ -1,6 +1,6 @@
 ﻿using Com.Ericmas001.Windows;
 
-namespace VirtualTaluva.Demo.StuffOnTile
+namespace VirtualTaluva.Demo.Models.StuffOnTile
 {
     public abstract class AbstractStuffOnTile : BaseViewModel
     {

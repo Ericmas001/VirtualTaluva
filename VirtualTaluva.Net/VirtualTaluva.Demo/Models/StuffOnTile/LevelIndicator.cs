@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
-namespace VirtualTaluva.Demo.StuffOnTile
+namespace VirtualTaluva.Demo.Models.StuffOnTile
 {
     public class LevelIndicator : AbstractStuffOnTile
     {

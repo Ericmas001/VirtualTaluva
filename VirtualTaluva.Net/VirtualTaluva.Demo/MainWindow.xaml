@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VirtualTaluva.Demo"
         xmlns:markupExtensions="clr-namespace:Com.Ericmas001.Windows.MarkupExtensions;assembly=Com.Ericmas001.Windows"
-        xmlns:shaderEffects="clr-namespace:VirtualTaluva.Demo.ShaderEffects"
-        xmlns:stuff="clr-namespace:VirtualTaluva.Demo.StuffOnTile"
+        xmlns:stuff="clr-namespace:VirtualTaluva.Demo.Models.StuffOnTile"
+        xmlns:util="clr-namespace:VirtualTaluva.Demo.Util"
         mc:Ignorable="d"
         Title="MainWindow" Height="621" Width="1125.728">
     <Window.DataContext>
@@ -42,7 +42,7 @@
     </Window.Resources>
     <Window.Style>
         <Style>
-            <Setter Property="local:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+            <Setter Property="util:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
         </Style>
     </Window.Style>
     <DockPanel>
@@ -66,7 +66,7 @@
         <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="Gray">
             <ScrollViewer.Style>
                 <Style>
-                    <Setter Property="local:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
+                    <Setter Property="util:Attach.InputBindings" Value="{StaticResource MyInputBindings}" />
                 </Style>
             </ScrollViewer.Style>
             <Grid HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10">
@@ -122,7 +122,7 @@
                                                 <DockPanel>
                                                     <Rectangle Fill="White" Width="100" Height="100">
                                                         <Rectangle.Effect>
-                                                            <shaderEffects:AngularGradientEffect CenterPoint="0.5,0.5" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
+                                                            <util:AngularGradientEffect CenterPoint="0.5,0.55" PrimaryColor="Red" SecondaryColor="Lime" ThirdColor="Blue" />
                                                         </Rectangle.Effect>
                                                     </Rectangle>
                                                 </DockPanel>

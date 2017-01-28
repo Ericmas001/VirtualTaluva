@@ -5,9 +5,9 @@ using System.Windows;
 using System.Windows.Media;
 using Com.Ericmas001.Windows;
 using Com.Ericmas001.Windows.ViewModels;
-using VirtualTaluva.Demo.StuffOnTile;
+using VirtualTaluva.Demo.Models.StuffOnTile;
 
-namespace VirtualTaluva.Demo
+namespace VirtualTaluva.Demo.Models
 {
     public enum PlayingTileStateEnum
     {

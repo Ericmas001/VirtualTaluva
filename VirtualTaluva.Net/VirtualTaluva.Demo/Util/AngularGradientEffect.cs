@@ -3,7 +3,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 
-namespace VirtualTaluva.Demo.ShaderEffects
+namespace VirtualTaluva.Demo.Util
 {
     public class AngularGradientEffect : ShaderEffect
     {

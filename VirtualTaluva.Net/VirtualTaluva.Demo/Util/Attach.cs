@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 
-namespace VirtualTaluva.Demo
+namespace VirtualTaluva.Demo.Util
 {
     public class Attach
     {

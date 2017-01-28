@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace VirtualTaluva.Demo
+namespace VirtualTaluva.Demo.Models
 {
     public interface IBoard
     {

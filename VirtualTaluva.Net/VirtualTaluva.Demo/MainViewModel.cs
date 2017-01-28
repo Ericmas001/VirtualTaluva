@@ -4,6 +4,7 @@ using System.Linq;
 using System.Windows;
 using Com.Ericmas001.Windows;
 using GalaSoft.MvvmLight.CommandWpf;
+using VirtualTaluva.Demo.Models;
 
 namespace VirtualTaluva.Demo
 {
