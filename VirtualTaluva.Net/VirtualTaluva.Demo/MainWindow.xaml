@@ -42,24 +42,41 @@
         </Style>
     </Window.Style>
     <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
-            <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomOutCommand}">-</Button>
-            <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding ZoomValue}" />
-            <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomInCommand}">+</Button>
-            <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding AntiRotateCommand}">↶</Button>
-            <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding RotateCommand}">↷</Button>
-            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding LeftCommand}">◀</Button>
-            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding UpCommand}">▲</Button>
-            <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding DownCommand}">▼</Button>
-            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding RightCommand}">▶</Button>
-            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding MoreLeftCommand}">◀+</Button>
-            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreUpCommand}">▲+</Button>
-            <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding MoreDownCommand}">▼+</Button>
-            <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreRightCommand}">▶+</Button>
-            <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding AcceptCommand}">GO</Button>
-            <TextBlock Text="{Binding CurrentTilePositions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="25,5,2,5" />
+        <StackPanel DockPanel.Dock="Top" Margin="10">
+            <StackPanel Orientation="Horizontal" Margin="5">
+                <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomOutCommand}">-</Button>
+                <TextBlock Margin="5" VerticalAlignment="Center" Text="{Binding ZoomValue}" />
+                <Button Margin="5" VerticalAlignment="Center" Command="{Binding ZoomInCommand}">+</Button>
+                <Button Margin="25,5,5,5" VerticalAlignment="Center" Command="{Binding AntiRotateCommand}">↶</Button>
+                <Button Margin="5,5,5,5" VerticalAlignment="Center" Command="{Binding RotateCommand}">↷</Button>
+                <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding LeftCommand}">◀</Button>
+                <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding UpCommand}">▲</Button>
+                <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding DownCommand}">▼</Button>
+                <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding RightCommand}">▶</Button>
+                <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding MoreLeftCommand}">◀+</Button>
+                <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreUpCommand}">▲+</Button>
+                <Button Margin="2,5,5,5" VerticalAlignment="Center" Command="{Binding MoreDownCommand}">▼+</Button>
+                <Button Margin="2,5,2,5" VerticalAlignment="Center" Command="{Binding MoreRightCommand}">▶+</Button>
+                <Button Margin="25,5,2,5" VerticalAlignment="Center" Command="{Binding AcceptCommand}">GO</Button>
+                <TextBlock Text="{Binding CurrentTilePositions, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Margin="25,5,2,5" />
+            </StackPanel>
+            <ItemsControl ItemsSource="{Binding AvailableLands}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Margin="25,0,0,0" Orientation="Horizontal">
+                            <Rectangle Fill="{Binding Brush}" Width="20" Height="20" Stroke="Black" StrokeThickness="2" VerticalAlignment="Center" />
+                            <TextBlock Margin="5,0,0,0" VerticalAlignment="Center" Text="{Binding Name}" FontWeight="Bold" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
-        <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="CadetBlue">
+            <ScrollViewer HorizontalScrollBarVisibility="Visible" VerticalScrollBarVisibility="Visible" Background="CadetBlue">
             <ScrollViewer.Style>
                 <Style>
                     <Setter Property="helpers:InputBindingHelper.InputBindings" Value="{StaticResource MyInputBindings}" />

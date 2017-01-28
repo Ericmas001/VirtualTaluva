@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Windows;
+using System.Windows.Media;
 using Com.Ericmas001.Common;
 using Com.Ericmas001.Windows;
 using GalaSoft.MvvmLight.CommandWpf;
@@ -12,6 +14,20 @@ namespace VirtualTaluva.Demo
 {
     public class MainViewModel : BaseViewModel, IBoard
     {
+        public class LandDescription
+        {
+            public LandEnum Land { get; }
+
+            public string Name => Land.ToString();
+            public Color Color => Land.WindowsColor();
+            public Brush Brush => Land.WindowsBrush();
+
+            public LandDescription(LandEnum land)
+            {
+                Land = land;
+            }
+        }
+
         public const int NB_TILES = 200;
         public const double TILE_WIDTH = 69.282032;
         public const double TILE_HEIGHT = 60;
@@ -27,6 +43,8 @@ namespace VirtualTaluva.Demo
         public FastObservableCollection<PlayingTile> PlayingTiles { get; } = new FastObservableCollection<PlayingTile>();
 
         public string CurrentTilePositions => $"{CurrentTile.IsOnOddRow} - {string.Join(" ", CurrentTile.Lands.Select(p => $"({p.LandType.ToString()},{p.X},{p.Y})"))}";
+
+        public IEnumerable<LandDescription> AvailableLands => EnumUtil.AllValues<LandEnum>().Select(e => new LandDescription(e)).ToArray();
 
         private double m_Scale = 1;
        

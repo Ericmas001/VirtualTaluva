@@ -1,25 +1,41 @@
-﻿using Com.Ericmas001.Common.Attributes;
+﻿using System.Windows.Media;
+using Com.Ericmas001.Common;
+using Com.Ericmas001.Common.Attributes;
 
 namespace VirtualTaluva.Demo.Enums
 {
     public enum LandEnum
     {
-        [Color("Red")]
+        [Color("OrangeRed")]
         Volcano,
 
-        [Color("Green")]
+        [Color("DarkGreen")]
         Jungle,
 
-        [Color("Lime")]
+        [Color("Chartreuse")]
         Grass,
 
-        [Color("Yellow")]
+        [Color("Moccasin")]
         Desert,
 
         [Color("Gray")]
         Quarry,
 
-        [Color("Blue")]
+        [Color("DodgerBlue")]
         Lagoon
+    }
+    public static class LandEnumExtension
+    {
+        public static Color WindowsColor(this LandEnum e)
+        {
+            var convertFromString = ColorConverter.ConvertFromString(e.Color());
+            if (convertFromString != null)
+                return (Color)convertFromString;
+            return Colors.Black;
+        }
+        public static Brush WindowsBrush(this LandEnum e)
+        {
+            return new SolidColorBrush(e.WindowsColor());
+        }
     }
 }
